@@ -33,7 +33,7 @@ int PDMtoTXT(const char *inputfile, const char *outputfile) {
 }
 
 int main() {
-    const char *input_filename = "img1.pgm";
+    const char *input_filename = "ex1.pgm";
     const char *output_filename = "output.txt";
 
     PDMtoTXT(input_filename, output_filename);
