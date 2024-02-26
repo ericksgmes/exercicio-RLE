@@ -29,8 +29,18 @@ void freeMatrix(int **mat, int columns)
     free(mat);
 }
 
-int **RLE(int **mat, int columns, int rows) 
+int **RLE_output(int **mat, int columns, int rows, const char *output_file) 
 { 
+    FILE * outputFileName = fopen(output_file, "w");
+    if(outputFileName == NULL)
+    {
+        printf("Failed to load output file");
+        return 0;
+    }
+
+    fprintf(outputFileName, "P8\n");
+    fprintf(outputFileName, "%d ", columns);
+    fprintf(outputFileName, "%d\n", rows);
     int *line = (int*) malloc(sizeof(int*) * columns);
     memset(line, 0, sizeof(int) * columns);
     int currentValue, count;
@@ -42,20 +52,20 @@ int **RLE(int **mat, int columns, int rows)
                 if (mat[i][j] == currentValue) {
                     count++;
                 } else {
-                    printf("@ %d %d ", currentValue, count);
+                    fprintf(outputFileName, "@ %d %d ", currentValue, count);
                     currentValue = mat[i][j];
                     count = 1;
                 }
             }
-            printf("@ %d %d ",currentValue, count);
-            printf("\n");
+            fprintf(outputFileName, "@ %d %d ",currentValue, count);
+            fprintf(outputFileName, "\n");
         }
-
+    fclose(outputFileName);
     free(line);
     return mat;
 }
 
-int read_file(const char *input_file)
+int read_file(const char *input_file, const char* output_file)
  {
     FILE * inputFileName = fopen(input_file, "r+");
     if(inputFileName == NULL)
@@ -79,20 +89,18 @@ int read_file(const char *input_file)
             fscanf(inputFileName, "%d", &image_info->mat[i][j]);
         }
     }
-
-    RLE(image_info->mat,image_info->numColumns, image_info->numRows);
+    RLE_output(image_info->mat, image_info->numColumns, image_info->numRows, output_file);
+    fclose(inputFileName);
     freeMatrix(image_info->mat, image_info->numRows);
     return 1;
  }
 
+
 int main() {
-    const char *input_filename = "ex1.pgm";
-    const char *output_filename = "output.txt";
+    const char *input_filename = "ex2.pgm";
+    const char *output_filename = "output_ex2.pgmc";
     
-    read_file(input_filename);
-    
-    // TXTtoRLE(output_filename);
-    
+    read_file(input_filename, output_filename);
 
     return 0;
 }
