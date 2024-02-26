@@ -1,7 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX_LINE_LENGTH 1000
+
+struct 
+{
+    char *type;
+    int numColunas;
+    int numLinhas;
+    int **mat;
+} t_pgmImage;
 
 void RLE(char *input, int length, FILE *outputFile) {
 }
