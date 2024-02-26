@@ -10,9 +10,6 @@ typedef struct
     int **mat;
 } t_pgmImage;
 
-void RLE(char *input, int length, FILE *outputFile) {
-}
-
 int **allocMatrix( int rows, int columns)
 {
     int **mat = (int**) malloc(sizeof(int*) * rows);
@@ -30,6 +27,32 @@ void freeMatrix(int **mat, int columns)
         free(mat[i]);
     }
     free(mat);
+}
+
+int **RLE(int **mat, int columns, int rows) 
+{ 
+    int *line = (int*) malloc(sizeof(int*) * columns);
+    memset(line, 0, sizeof(int) * columns);
+    int currentValue, count;
+    int j=0;
+    for (int i = 0; i < rows; i++) {
+            currentValue = mat[i][j]; 
+            count = 1; 
+            for (j = 1; j < columns; j++) {
+                if (mat[i][j] == currentValue) {
+                    count++;
+                } else {
+                    printf("@ %d %d ", currentValue, count);
+                    currentValue = mat[i][j];
+                    count = 1;
+                }
+            }
+            printf("@ %d %d ",currentValue, count);
+            printf("\n");
+        }
+
+    free(line);
+    return mat;
 }
 
 int read_file(const char *input_file)
@@ -56,15 +79,18 @@ int read_file(const char *input_file)
             fscanf(inputFileName, "%d", &image_info->mat[i][j]);
         }
     }
-    
+
+    RLE(image_info->mat,image_info->numColumns, image_info->numRows);
+    freeMatrix(image_info->mat, image_info->numRows);
     return 1;
  }
 
 int main() {
     const char *input_filename = "ex1.pgm";
     const char *output_filename = "output.txt";
-
-    PGMtoTXT(input_filename);
+    
+    read_file(input_filename);
+    
     // TXTtoRLE(output_filename);
     
 
