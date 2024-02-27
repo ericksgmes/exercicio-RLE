@@ -96,11 +96,9 @@ int read_file(const char *input_file, const char* output_file)
  }
 
 
-int main() {
-    const char *input_filename = "ex2.pgm";
-    const char *output_filename = "output_ex2.pgmc";
+int main(int argc, char * argv[]) {
     
-    read_file(input_filename, output_filename);
+    read_file(argc, argv);
 
     return 0;
 }
