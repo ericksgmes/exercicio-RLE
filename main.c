@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 typedef struct 
 {
@@ -95,10 +96,19 @@ int read_file(const char *input_file, const char* output_file)
     return 1;
  }
 
+void print_file_size(const char *filename) {
+    struct stat st;
+    if (stat(filename, &st) == 0) {
+        printf("%lld bytes\n", (long long)st.st_size);
+    } else {
+        printf("File not found or error accessing file\n");
+    }
+}
 
-int main(int argc, char * argv[]) {
-    
-    read_file(argc, argv);
+int main(int argc, char *argv[]) {
+
+
+    read_file(argv[1], argv[2]);
 
     return 0;
 }
