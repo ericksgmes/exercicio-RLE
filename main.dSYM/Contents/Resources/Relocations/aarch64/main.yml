@@ -1,0 +1,15 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/erickgomes/Documents/IFSP-ADS/IF-SCL-2024.1/ESDD/exercicio-RLE/main'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _allocMatrix, symObjAddr: 0x0, symBinAddr: 0x100003488, symSize: 0x88 }
+  - { offsetInCU: 0x10B, offset: 0x10B, size: 0x8, addend: 0x0, symName: _allocMatrix, symObjAddr: 0x0, symBinAddr: 0x100003488, symSize: 0x88 }
+  - { offsetInCU: 0x16B, offset: 0x16B, size: 0x8, addend: 0x0, symName: _allocCHARMatrix, symObjAddr: 0x88, symBinAddr: 0x100003510, symSize: 0x88 }
+  - { offsetInCU: 0x1CB, offset: 0x1CB, size: 0x8, addend: 0x0, symName: _freeMatrix, symObjAddr: 0x110, symBinAddr: 0x100003598, symSize: 0x6C }
+  - { offsetInCU: 0x219, offset: 0x219, size: 0x8, addend: 0x0, symName: _freeCHARMatrix, symObjAddr: 0x17C, symBinAddr: 0x100003604, symSize: 0x6C }
+  - { offsetInCU: 0x267, offset: 0x267, size: 0x8, addend: 0x0, symName: _RLE_encoding, symObjAddr: 0x1E8, symBinAddr: 0x100003670, symSize: 0x278 }
+  - { offsetInCU: 0x329, offset: 0x329, size: 0x8, addend: 0x0, symName: _file_compression, symObjAddr: 0x460, symBinAddr: 0x1000038E8, symSize: 0x210 }
+  - { offsetInCU: 0x3B3, offset: 0x3B3, size: 0x8, addend: 0x0, symName: _RLE_decoding, symObjAddr: 0x670, symBinAddr: 0x100003AF8, symSize: 0x108 }
+  - { offsetInCU: 0x44B, offset: 0x44B, size: 0x8, addend: 0x0, symName: _file_decompression, symObjAddr: 0x778, symBinAddr: 0x100003C00, symSize: 0x298 }
+  - { offsetInCU: 0x51B, offset: 0x51B, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0xA10, symBinAddr: 0x100003E98, symSize: 0x3C }
+...
