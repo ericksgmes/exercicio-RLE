@@ -96,7 +96,6 @@ int file_compression(const char *to_RLE_file, const char* output_RLE_file)
     return 1;
  }
 
-
 int file_decompression(const char *to_PGM_file, const char* output_PGM_file) {
     FILE * inputFileName = fopen(to_PGM_file, "r+");
     if(inputFileName == NULL)
@@ -115,18 +114,20 @@ int file_decompression(const char *to_PGM_file, const char* output_PGM_file) {
     
     for(int i = 0; i < image_info->numRows ; i++) {
         for(int j = 0; j < image_info->numColumns; j++) {
-            fscanf(inputFileName, "%d", &image_info->mat[i][j]);
+            char pixel;
+            fscanf(inputFileName, " %c", &pixel);
+            if(pixel == '@') fscanf(inputFileName, "%d", &image_info->mat[i][j]);
         }
     }
     
     printf("%s\n", image_info->type);
     printf("%d\n", image_info->numColumns);
-    printf("%d\n", image_info->numRows);
+    printf("%d ", image_info->numRows);
     printf("%d\n", image_info->maxGray);
 
     for(int i = 0; i < image_info->numRows ; i++) {
         for(int j = 0; j < image_info->numColumns; j++) {
-            printf("%d", image_info->mat[i][j]);
+            printf("%d", &image_info->mat[i][j]);
         }
     }
 
@@ -140,8 +141,8 @@ int main() {
 // int argc, char *argv[]
 
     //file_compression(argv[1], argv[2]);
-    file_compression("ex2.pgm", "outputMatrixTEST.pgmc");
-    //file_decompression("outputTest66.pgmc", "out21.pgm");
+    //file_compression("ex1.pgm", "TEST.pgmc");
+    file_decompression("TEST.pgmc", "out21.pgm");
 
     return 0;
 }
