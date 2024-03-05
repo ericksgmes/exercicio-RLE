@@ -30,7 +30,7 @@ void freeMatrix(int **mat, int columns)
     free(mat);
 }
 
-int **RLE_encoding(int **mat, int columns, int rows, const char *output_file, int maxGray) 
+int **RLE_encoding(const char *output_file, t_pgmImage * image) 
 { 
     FILE * outputFileName = fopen(output_file, "w");
     if(outputFileName == NULL)
@@ -40,22 +40,22 @@ int **RLE_encoding(int **mat, int columns, int rows, const char *output_file, in
     }
 
     fprintf(outputFileName, "P8\n");
-    fprintf(outputFileName, "%d ", columns);
-    fprintf(outputFileName, "%d\n", rows);
-    fprintf(outputFileName, "%d\n", maxGray);
-    int *line = (int*) malloc(sizeof(int*) * columns);
-    memset(line, 0, sizeof(int) * columns);
+    fprintf(outputFileName, "%d ", image->numColumns);
+    fprintf(outputFileName, "%d\n", image->numRows);
+    fprintf(outputFileName, "%d\n", image->maxGray);
+    int *line = (int*) malloc(sizeof(int*) * image->numColumns);
+    memset(line, 0, sizeof(int) * image->numColumns);
     int currentValue, count;
     int j=0;
-    for (int i = 0; i < rows; i++) {
-            currentValue = mat[i][j]; 
+    for (int i = 0; i < image->numRows; i++) {
+            currentValue = image->mat[i][j]; 
             count = 1; 
-            for (j = 1; j < columns; j++) {
-                if (mat[i][j] == currentValue) {
+            for (j = 1; j < image->numColumns; j++) {
+                if (image->mat[i][j] == currentValue) {
                     count++;
                 } else {
                     fprintf(outputFileName, "@%d %d", currentValue, count);
-                    currentValue = mat[i][j];
+                    currentValue = image->mat[i][j];
                     count = 1;
                 }
             }
@@ -64,7 +64,7 @@ int **RLE_encoding(int **mat, int columns, int rows, const char *output_file, in
         }
     fclose(outputFileName);
     free(line);
-    return mat;
+    return image->mat;
 }
 
 int file_compression(const char *to_RLE_file, const char* output_RLE_file)
@@ -90,7 +90,7 @@ int file_compression(const char *to_RLE_file, const char* output_RLE_file)
             fscanf(inputFileName, "%d", &image_info->mat[i][j]);
         }
     }
-    RLE_encoding(image_info->mat, image_info->numColumns, image_info->numRows, output_RLE_file, image_info->maxGray);
+    RLE_encoding(output_RLE_file, image_info);
     fclose(inputFileName);
     freeMatrix(image_info->mat, image_info->numRows);
     return 1;
@@ -108,7 +108,7 @@ int main() {
 // int argc, char *argv[]
 
     //file_compression(argv[1], argv[2]);
-    file_compression("ex1.pgm", "outputTest.pgmc");
+    file_compression("ex2.pgm", "outputTest66.pgmc");
     //file_decompression("outputv2.pgmc", "out21.pgm");
 
     return 0;
