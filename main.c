@@ -54,12 +54,12 @@ int **RLE_encoding(int **mat, int columns, int rows, const char *output_file, in
                 if (mat[i][j] == currentValue) {
                     count++;
                 } else {
-                    fprintf(outputFileName, "@%d/%d", currentValue, count);
+                    fprintf(outputFileName, "@%d %d", currentValue, count);
                     currentValue = mat[i][j];
                     count = 1;
                 }
             }
-            fprintf(outputFileName, "@%d/%d",currentValue, count);
+            fprintf(outputFileName, "@%d %d",currentValue, count);
             fprintf(outputFileName, "\n");
         }
     fclose(outputFileName);
@@ -96,11 +96,11 @@ int file_compression(const char *to_RLE_file, const char* output_RLE_file)
     return 1;
  }
 
-int **RLE_decoding(int **mat, int columns, int rows, const char * output_file) {
-
+void RLE_decoding(int **mat, int columns, int rows, const char * output_file) {
+    //add **RLE_decoding
 }
 
-int file_decompression(const char *to_PGM_file, const char* output_PGM_file) {
+void file_decompression(const char *to_PGM_file, const char* output_PGM_file) {
 
 }
 
@@ -108,8 +108,8 @@ int main() {
 // int argc, char *argv[]
 
     //file_compression(argv[1], argv[2]);
-    // file_compression("ex1.pgm", "outputv2.pgmc");
-    file_decompression("outputv2.pgmc", "out21.pgm");
+    file_compression("ex1.pgm", "outputTest.pgmc");
+    //file_decompression("outputv2.pgmc", "out21.pgm");
 
     return 0;
 }
