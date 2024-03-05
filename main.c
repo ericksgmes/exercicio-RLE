@@ -11,17 +11,17 @@ typedef struct
     int **mat;
 } t_pgmImage;
 
-int **allocMatrix( int rows, int columns)
+int **allocMatrix( int rows, int columns, size_t sizeOfType)
 {
-    int **mat = (int**) malloc(sizeof(int*) * rows);
+    int **mat = malloc(sizeof(void *) * rows);
     for (int i=0; i<rows; ++i)
     {
-    mat[i] = (int*)malloc(sizeof(int) * columns);
+    mat[i] = malloc(sizeOfType * columns);
     }
     return mat;
 }
 
-void freeMatrix(int **mat, int columns)
+void freeMatrix(void **mat, int columns)
 {
     for (int i = 0; i < columns; i++)
     {
@@ -83,7 +83,7 @@ int file_compression(const char *to_RLE_file, const char* output_RLE_file)
     fscanf(inputFileName, "%d", &image_info[0].numRows);
     fscanf(inputFileName, "%d", &image_info[0].maxGray);
 
-    image_info->mat = allocMatrix(image_info->numRows, image_info->numColumns);
+    image_info->mat = allocMatrix(image_info->numRows, image_info->numColumns, sizeof(int));
 
     for(int i = 0; i < image_info->numRows ; i++) {
         for(int j = 0; j < image_info->numColumns; j++) {
@@ -92,24 +92,56 @@ int file_compression(const char *to_RLE_file, const char* output_RLE_file)
     }
     RLE_encoding(output_RLE_file, image_info);
     fclose(inputFileName);
-    freeMatrix(image_info->mat, image_info->numRows);
+    freeMatrix((void **)image_info->mat, image_info->numRows);
     return 1;
  }
 
-void RLE_decoding(int **mat, int columns, int rows, const char * output_file) {
-    //add **RLE_decoding
-}
 
-void file_decompression(const char *to_PGM_file, const char* output_PGM_file) {
+int file_decompression(const char *to_PGM_file, const char* output_PGM_file) {
+    FILE * inputFileName = fopen(to_PGM_file, "r+");
+    if(inputFileName == NULL)
+    {
+        printf("Failed to load input file");
+        return 0;
+    }
 
+    t_pgmImage *image_info = (t_pgmImage *) malloc(sizeof(t_pgmImage));
+    fscanf(inputFileName, "%2s", image_info->type);
+    fscanf(inputFileName, "%d", &image_info->numColumns);
+    fscanf(inputFileName, "%d", &image_info->numRows);
+    fscanf(inputFileName, "%d", &image_info->maxGray);
+
+    image_info->mat = allocMatrix(image_info->numRows, image_info->numColumns, sizeof(int));
+    
+    for(int i = 0; i < image_info->numRows ; i++) {
+        for(int j = 0; j < image_info->numColumns; j++) {
+            fscanf(inputFileName, "%d", &image_info->mat[i][j]);
+        }
+    }
+    
+    printf("%s\n", image_info->type);
+    printf("%d\n", image_info->numColumns);
+    printf("%d\n", image_info->numRows);
+    printf("%d\n", image_info->maxGray);
+
+    for(int i = 0; i < image_info->numRows ; i++) {
+        for(int j = 0; j < image_info->numColumns; j++) {
+            printf("%d", image_info->mat[i][j]);
+        }
+    }
+
+    //RLE_encoding(output_PGM_file, image_info);
+    fclose(inputFileName);
+    freeMatrix((void **)image_info->mat, image_info->numRows);
+    return 1;
 }
 
 int main() {
 // int argc, char *argv[]
 
     //file_compression(argv[1], argv[2]);
-    file_compression("ex2.pgm", "outputTest66.pgmc");
-    //file_decompression("outputv2.pgmc", "out21.pgm");
+    file_compression("ex2.pgm", "outputMatrixTEST.pgmc");
+    //file_decompression("outputTest66.pgmc", "out21.pgm");
 
     return 0;
 }
