@@ -77,11 +77,10 @@ int file_compression(const char *to_RLE_file, const char* output_RLE_file)
     }
 
     t_pgmImage *image_info = (t_pgmImage *) malloc(sizeof(t_pgmImage));
-    fscanf(inputFileName, "%c", &image_info[0].type[0]);
-    fscanf(inputFileName, "%c", &image_info[0].type[1]);
-    fscanf(inputFileName, "%d", &image_info[0].numColumns);
-    fscanf(inputFileName, "%d", &image_info[0].numRows);
-    fscanf(inputFileName, "%d", &image_info[0].maxGray);
+    fscanf(inputFileName, "%2s", image_info->type);
+    fscanf(inputFileName, "%d", &image_info->numColumns);
+    fscanf(inputFileName, "%d", &image_info->numRows);
+    fscanf(inputFileName, "%d", &image_info->maxGray);
 
     image_info->mat = allocMatrix(image_info->numRows, image_info->numColumns, sizeof(int));
 
@@ -127,7 +126,8 @@ int file_decompression(const char *to_PGM_file, const char* output_PGM_file) {
 
     for(int i = 0; i < image_info->numRows ; i++) {
         for(int j = 0; j < image_info->numColumns; j++) {
-            printf("%d", &image_info->mat[i][j]);
+            int d = image_info->mat[i][j];
+            printf("%d", d);
         }
     }
 
@@ -141,8 +141,8 @@ int main() {
 // int argc, char *argv[]
 
     //file_compression(argv[1], argv[2]);
-    //file_compression("ex1.pgm", "TEST.pgmc");
-    file_decompression("TEST.pgmc", "out21.pgm");
+    file_compression("ex2.pgm", "TEST.pgmc");
+    //file_decompression("TEST.pgmc", "out21.pgm");
 
     return 0;
 }
