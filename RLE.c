@@ -52,7 +52,7 @@ int **RLE_encoding(const char *output_file, t_pgmImage * image)
                 if (image->mat[i][j] == currentValue) {
                     count++;
                 } else {
-                    if (fprintf(outputFileName, "@%d%d", currentValue, count) < 0) {
+                    if (fprintf(outputFileName, "@%d;%d", currentValue, count) < 0) {
                         printf("Failed to write to output file");
                         fclose(outputFileName);
                         free(line);
@@ -62,7 +62,7 @@ int **RLE_encoding(const char *output_file, t_pgmImage * image)
                     count = 1;
                 }
             }
-            if (fprintf(outputFileName, "@%d%d",currentValue, count) < 0) {
+            if (fprintf(outputFileName, "@%d;%d",currentValue, count) < 0) {
                 printf("Failed to write to output file");
                 fclose(outputFileName);
                 free(line);
@@ -145,7 +145,7 @@ int file_decompression(const char *to_PGM_file, const char* output_PGM_file)
         printf("Failed to load input file");
         return 0;
     }
-
+    printf("$$ %s\n", to_PGM_file);
     t_pgmImage *image_info = (t_pgmImage *) malloc(sizeof(t_pgmImage));
     if (image_info == NULL)
     {
@@ -155,9 +155,13 @@ int file_decompression(const char *to_PGM_file, const char* output_PGM_file)
     }
 
     fscanf(inputFileName, "%2s", image_info->type);
+    printf("$$ %s\n", image_info->type);
     fscanf(inputFileName, "%d", &image_info->numColumns);
+    printf("$$ %d\n", image_info->numColumns);
     fscanf(inputFileName, "%d", &image_info->numRows);
+    printf("$$ %d\n", image_info->numRows);
     fscanf(inputFileName, "%d", &image_info->maxGray);
+    printf("$$ %d\n", image_info->maxGray);
 
     image_info->mat = allocMatrix(image_info->numRows, image_info->numColumns, sizeof(int));
     if (image_info->mat == NULL)
@@ -170,26 +174,78 @@ int file_decompression(const char *to_PGM_file, const char* output_PGM_file)
     
     char line[100];
     fgets(line, sizeof(line), inputFileName); 
+    int ponteiro = ftell(inputFileName);
     for (int i = 0; i < image_info->numRows; i++) {
         fgets(line, sizeof(line), inputFileName); 
-        char *token = strtok(line, "@"); 
+        char *token = strtok(line, "@");
         int j = 0;
         while (token != NULL && j < image_info->numColumns) {
             if (strcmp(token, "") != 0) {
-                image_info->mat[i][j++] = atoi(token); 
-               //printf("%d ", image_info->mat[i][j - 1]);
+                image_info->mat[i][j++] = atoi(token);
+                printf("%d ", image_info->mat[i][j - 1]);
             }
             token = strtok(NULL, "@"); 
         }
-        //printf("\n");
+        printf("\n");
     }
 
-    for(int i = 0; i < image_info->numRows ; i++) {
-        for(int j = 0; j < image_info->numColumns; j++) {
-            printf("%d ", image_info->mat[i][j]);
+    int **mat1 = allocMatrix(image_info->numRows, image_info->numColumns, sizeof(int));
+    if (mat1 == NULL)
+    {
+        printf("Failed to allocate memory for image matrix");
+        fclose(inputFileName);
+        free(image_info);
+        return 0;
+    }
+
+    fseek(inputFileName, ponteiro-1, SEEK_SET);
+
+    char line2[100];
+    fgets(line2, sizeof(line2), inputFileName); 
+    for (int i = 0; i < image_info->numRows; i++) {
+        fgets(line2, sizeof(line2), inputFileName); 
+        char *token2 = strtok(line2, ";");
+        int j = 0;
+        while (token2 != NULL && j < image_info->numColumns) {
+            if (strcmp(token2, "") != 0) {
+                mat1[i][j++] = atoi(token2);
+                printf("%d ", mat1[i][j - 1]);
+            }
+            token2 = strtok(NULL, ";"); 
         }
         printf("\n");
     }
+
+    int **finalMatrix = allocMatrix(image_info->numRows, image_info->numColumns, sizeof(int));
+    if (finalMatrix == NULL)
+    {
+        printf("Failed to allocate memory for image matrix");
+        fclose(inputFileName);
+        free(image_info);
+        return 0;
+    }
+
+    //FINISH THIS FUNCTION!!!!!!!!!!!
+
+    for (int i = 0; i < image_info->numRows; i++) {
+        for (int j = 0; j < image_info->numColumns; j++) {
+            printf("## %d ", mat1[i][j+1]);
+            for(int k=0; k<mat1[i][j+1]; k++) {
+                finalMatrix[i][j] = image_info->mat[i][j];
+                //printf("** %d ", finalMatrix[i][j]);
+                //printf("@@ %d ", image_info->mat[i][j]);
+            }
+           // printf("%d ", finalMatrix[i][j]);
+        }
+        printf("\n");
+    }
+
+    // for(int i = 0; i < image_info->numRows ; i++) {
+    //     for(int j = 0; j < image_info->numColumns; j++) {
+    //         printf("%d ", image_info->mat[i][j]);
+    //     }
+    //     printf("\n");
+    // }
 
    // RLE_decoding(output_PGM_file, image_info);
     fclose(inputFileName);
