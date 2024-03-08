@@ -1,3 +1,15 @@
+## v1.0.0 (2024-03-08)
+
+### BREAKING CHANGE
+
+- file decompression working :)
+
+### Feat
+
+- **file_decompression**: File decompression function implemented, docs change in the .readme, RLE_decoding removed
+- **file_decompression**: WIP FINISH LAST FUNCTION NICE
+- **file_decompression**: Implement file_decompression func
+
 ## v0.5.2 (2024-03-06)
 
 ### Refactor
