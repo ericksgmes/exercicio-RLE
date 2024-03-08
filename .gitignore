@@ -8,3 +8,5 @@ output.txt
 .DS_Store
 .pgmc
 .json
+.exe
+.o
