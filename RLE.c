@@ -145,7 +145,6 @@ int file_decompression(const char *to_PGM_file, const char* output_PGM_file)
         printf("Failed to load input file");
         return 0;
     }
-    printf("$$ %s\n", to_PGM_file);
     t_pgmImage *image_info = (t_pgmImage *) malloc(sizeof(t_pgmImage));
     if (image_info == NULL)
     {
@@ -155,13 +154,9 @@ int file_decompression(const char *to_PGM_file, const char* output_PGM_file)
     }
 
     fscanf(inputFileName, "%2s", image_info->type);
-    printf("$$ %s\n", image_info->type);
     fscanf(inputFileName, "%d", &image_info->numColumns);
-    printf("$$ %d\n", image_info->numColumns);
     fscanf(inputFileName, "%d", &image_info->numRows);
-    printf("$$ %d\n", image_info->numRows);
     fscanf(inputFileName, "%d", &image_info->maxGray);
-    printf("$$ %d\n", image_info->maxGray);
 
     image_info->mat = allocMatrix(image_info->numRows, image_info->numColumns, sizeof(int));
     if (image_info->mat == NULL)
@@ -182,11 +177,9 @@ int file_decompression(const char *to_PGM_file, const char* output_PGM_file)
         while (token != NULL && j < image_info->numColumns) {
             if (strcmp(token, "") != 0) {
                 image_info->mat[i][j++] = atoi(token);
-                printf("%d ", image_info->mat[i][j - 1]);
             }
             token = strtok(NULL, "@"); 
         }
-        printf("\n");
     }
 
     int **mat1 = allocMatrix(image_info->numRows, image_info->numColumns, sizeof(int));
@@ -205,15 +198,14 @@ int file_decompression(const char *to_PGM_file, const char* output_PGM_file)
     for (int i = 0; i < image_info->numRows; i++) {
         fgets(line2, sizeof(line2), inputFileName); 
         char *token2 = strtok(line2, ";");
+        token2 = strtok(NULL, ";"); 
         int j = 0;
         while (token2 != NULL && j < image_info->numColumns) {
             if (strcmp(token2, "") != 0) {
                 mat1[i][j++] = atoi(token2);
-                printf("%d ", mat1[i][j - 1]);
             }
             token2 = strtok(NULL, ";"); 
         }
-        printf("\n");
     }
 
     int **finalMatrix = allocMatrix(image_info->numRows, image_info->numColumns, sizeof(int));
@@ -225,79 +217,31 @@ int file_decompression(const char *to_PGM_file, const char* output_PGM_file)
         return 0;
     }
 
-    //FINISH THIS FUNCTION!!!!!!!!!!!
+    FILE * outputFileName = fopen(output_PGM_file, "w");
+    if(outputFileName == NULL)
+    {
+        printf("Failed to load output file");
+        return 0;
+    }
+
+    fprintf(outputFileName, "P2\n");
+    fprintf(outputFileName, "%d ", image_info->numColumns);
+    fprintf(outputFileName, "%d\n", image_info->numRows);
+    fprintf(outputFileName, "%d\n", image_info->maxGray);
 
     for (int i = 0; i < image_info->numRows; i++) {
         for (int j = 0; j < image_info->numColumns; j++) {
-            printf("## %d ", mat1[i][j+1]);
-            for(int k=0; k<mat1[i][j+1]; k++) {
+            for(int k=0; k<mat1[i][j]; k++) {
                 finalMatrix[i][j] = image_info->mat[i][j];
-                //printf("** %d ", finalMatrix[i][j]);
-                //printf("@@ %d ", image_info->mat[i][j]);
+                fprintf(outputFileName, "%d ", finalMatrix[i][j]);
             }
-           // printf("%d ", finalMatrix[i][j]);
+            
         }
-        printf("\n");
+        fprintf(outputFileName, "\n");
     }
 
-    // for(int i = 0; i < image_info->numRows ; i++) {
-    //     for(int j = 0; j < image_info->numColumns; j++) {
-    //         printf("%d ", image_info->mat[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-   // RLE_decoding(output_PGM_file, image_info);
     fclose(inputFileName);
     freeMatrix((void **)image_info->mat, image_info->numRows);
     free(image_info);
     return 1;
-}
-
-
-int ** RLE_decoding(const char *output_file, t_pgmImage * image) 
-{ 
-    FILE * outputFileName = fopen(output_file, "w");
-    if(outputFileName == NULL)
-    {
-        printf("Failed to load output file");
-        return NULL;
-    }
-
-    fprintf(outputFileName, "P2\n");
-    fprintf(outputFileName, "%d ", image->numColumns);
-    fprintf(outputFileName, "%d\n", image->numRows);
-    fprintf(outputFileName, "%d\n", image->maxGray);
-    int *line = (int*) malloc(sizeof(int*) * image->numColumns);
-    if(line == NULL)
-    {
-        printf("Failed to allocate memory for line");
-        fclose(outputFileName);
-        return NULL;
-    }
-    memset(line, 0, sizeof(int) * image->numColumns);
-    int currentValue, count;
-    int j=0;
-    for (int i = 0; i < image->numRows; i++) {
-            currentValue = image->mat[i][j]; 
-            count = 1; 
-            for (j = 1; j < image->numColumns; j++) {
-                if (image->mat[i][j] == currentValue) {
-                    count++;
-                } else {
-                    for (int k = 0; k < count; k++) {
-                        fprintf(outputFileName, "%d ", currentValue);
-                    }
-                    currentValue = image->mat[i][j];
-                    count = 1;
-                }
-            }
-            for (int k = 0; k < count; k++) {
-                fprintf(outputFileName, "%d ", currentValue);
-            }
-            fprintf(outputFileName, "\n");
-        }
-    fclose(outputFileName);
-    free(line);
-    return image->mat;
 }

@@ -1,4 +1,3 @@
 Projeto para comprimir/descomprimir arquivos pgmc/pgmc
 
-Fução de compressão funciona
-WIP descompressão
+./main inputFolder/inputfilename.pgm(or pgmc) outputFolder/outputfilename.pgmc(or pgm)
