@@ -5,7 +5,6 @@
 
 int main(int argc, char *argv[]) {
     (void)argc;
-    char *arg = malloc(strlen(argv[1]) + 1);
     if (arg == NULL) {
         printf("Memory allocation failed\n");
         return 1;
